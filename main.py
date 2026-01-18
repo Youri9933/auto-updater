@@ -204,6 +204,33 @@ def config_menu(config):
 
 
 #MAIN
+def main():
+    config = load_cconfig()
 
+
+    while True:
+        print("\n=== AUTO UPDATER ====")
+        print("os détecté :", SYSTEM)
+        print("1 - Update")
+        print("2 - Config")
+        print("0 - Quitter")
+
+
+        choice = input("Choix : ")
+
+        if choice == "1":
+            update_apps(config)
+
+
+        elif choice == "2":
+            config_menu(config)
+
+
+        elif choice == "0":
+            break
+
+
+if __name__ == "__main__":
+    main()
 
 
