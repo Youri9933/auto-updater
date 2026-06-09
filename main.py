@@ -147,4 +147,63 @@ def setup_scheduler(config):
         "/f"
         ], shell=True)
 
+    elif SYSTEM == "linux":
+        cron_job = f"0 0 */{interval} * * python3 {os.path.abspath(__file__)}\n"
+        subprocess.run(
+            f'(crontab -1; echo "{cron_job}") | crontab -',
+            shell=True
+        )
+
+    print("Scheduler activé")
+
+
+def remove_scheduler():
+    if SYSTEM == "windos":
+        subprocess.run(["schtasks", "/delete", "/tn", "AutoUpdater", "/f"], shell=True)
+
+    elif SYSTEM == "Linux":
+        subprocess.run("crontab -r", shell=True)
+    
+
+    print(" Scheduler suprimé")
+
+
+# MENU
+def config_menu(config):
+    print("\n Config")
+    print("1 - Toggle update_all")
+    print("2 - Ajouter app")
+    print("3 - Ajouter exclusion")
+    print("4 - Scheduler ON")
+    print("5 - Scheduler OFF")
+    print("0 - Retour")
+
+    choice = input("Choix : ")
+
+    if choice == "1":
+        config["update_all"] = not config["update_all"]
+
+    elif choice == "2":
+        app = input("Nom app : ")
+        config["apps_list"].append(app)
+
+    elif choice == "3":
+        exel = input("Nom à exclure : ")
+        config["exclude_list"].append(exel)
+
+    elif choice == "4":
+        config["schedule_enabled"] = True
+        setup_scheduler(config)
+    
+    elif choice == "5":
+        config["scheduler_enabled"] = False
+        remove_scheduler()
+
+    
+    save_config(config)
+
+
+#MAIN
+
+
 
