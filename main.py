@@ -70,3 +70,81 @@ def detect_package_manager():
 
 # UPDATE CROSS PLATFORM
 
+def update_apps(config):
+    print("Mise à jour...")
+
+
+    log = f"\n===== UPDATE {datetime.now()} ====\n"
+
+
+    try:
+
+        #WINDOWS
+        if SYSTEM == "windows":
+            if config["update_all"]:
+                result = subprocess.run(
+                    ["winget","upgrade", "--all"],
+                    capture_output=True, text=True 
+                )
+                log += result.stdout
+
+            else:
+                for app in conflig["apps_list"]
+                if any(ex in app.lower() for ex in config ["exclude_list"]):
+                    continue
+
+
+                res = subprocess.run(
+                    ["winget", "upgrade", app],
+                    capture_output=True, text=True
+                )
+                log += res.stdout + "\n"
+
+
+               #LINUX
+        elif SYSTEM == "linux":
+            pm = detect_package_manager()
+
+            if pm == "apt":
+                subprocess.run(["sudo", "apt", "update"])
+                result = subprocess.run(
+                    ["sudo", "apt", "upgrade", "-y"],
+                    capture_output=True, text=True
+                )
+                log += result.stdout
+
+            elif pm == "pacman":
+                result = subprocess.run(
+                    ["sudo", "pacman", "-Syu", "--noconfirm"],
+)
+                log += result.stdout
+
+            else:
+                log += " Aucun gestionnaire de paquets détecté\n"
+                print(" Linux non supporté")
+
+        print(" Terminé")
+
+    except Exception as e:
+        log += f"Erreur : {e}\n"
+        print(" Erreur")
+
+write_log(log)
+open_log()
+
+#SCHEDULER
+def setup_scheduler(config):
+    interval = str(config["day_interval"])
+
+    if SYSTEM == "windows":
+        subprocess.run([
+        "schtasks",
+        "/create",
+        "/sr", "daily",
+        "/mo", interval,
+        "tn", "AutoUpater",
+        "/tr", f'python "{os.path.abspath(__file__)}"',
+        "/f"
+        ], shell=True)
+
+
