@@ -112,20 +112,10 @@ def open_log():
 
 
 def show_logo():
-
     if os.path.exists(LOGO_FILE):
-        print(f"[logo] {LOGO_FILE}")
+        print(f"Logo: {LOGO_FILE}")
     else:
-        print("[logo absent]")
-
-
-def update_dev_tools():
-    if not SYSTEM.startswith("win"):
-        print("update_dev_tools: winget disponible uniquement sur Windows")
-        return
-    for tool in DEV_TOOLS:
-        print(f"Update / Install: {tool}")
-        subprocess.run(["winget", "install", "--id", tool, "-e", "--source", "winget"], check=False)
+        print("Logo absent (assets/logo.png)")
 
 
 def detect_package_manager():
@@ -136,6 +126,42 @@ def detect_package_manager():
     if os.path.exists("/usr/bin/dnf"):
         return "dnf"
     return None
+
+
+def is_installed(app):
+    if not SYSTEM.startswith("win"):
+        return False
+    try:
+        result = subprocess.run(["winget", "list", app], capture_output=True, text=True, check=False)
+        return app.lower() in (result.stdout or "").lower()
+    except Exception:
+        return False
+
+
+def install_or_update(tool):
+    if not SYSTEM.startswith("win"):
+        return f"Skipped (non-Windows): {tool}"
+    try:
+        if is_installed(tool):
+            print(f"Update : {tool}")
+            result = subprocess.run(["winget", "upgrade", tool], capture_output=True, text=True, check=False)
+        else:
+            print(f"Install: {tool}")
+            result = subprocess.run(["winget", "install", "--id", tool, "-e"], capture_output=True, text=True, check=False)
+        return (result.stdout or result.stderr or "").strip()
+    except Exception as e:
+        return f"ERROR: {e}"
+
+
+def update_dev_tools():
+    print("Mise à jour / installation des outils dev")
+    log = f"\n==== DEV TOOLS {datetime.now()} =====\n"
+    for tool in DEV_TOOLS:
+        print(tool)
+        out = install_or_update(tool)
+        log += f"{tool}:\n{out}\n\n"
+    write_log(log)
+    open_log()
 
 
 def update_apps(config):
