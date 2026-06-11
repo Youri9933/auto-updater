@@ -10,6 +10,51 @@ LOG_FILE = "logs/update_log.txt"
 SYSTEM = platform.system().lower()  
 
 
+DEV_TOOLS = [
+    "Git",
+    "GitHub Desktop",
+    "GitKraken",
+    "Docker",
+    "Docker Desktop",
+    "Kubernetes",
+    "Windows Terminal",
+    "PowerShell",
+    "WSL",
+    "Curl",
+    "7zip",
+
+    "Visual Studio Code",
+    "Visual Studio",
+    "JetBrains Toolbox",
+    "IntelliJ IDEA",
+    "PyCharm",
+    "WebStorm",
+    "Android Studio",
+    "Notepad++",
+
+    "Node.js",
+    "Python",
+    "Java",
+    ".NET SDK",
+    "Go",
+    "Rust",
+    "PHP",
+
+    "MySQL",
+    "PostgreSQL",
+    "MongoDB",
+    "Redis",
+    "SQLite",
+
+    "Postman",
+    "Insomnia",
+
+    "AWS CLI",
+    "Azure CLI",
+    "Google Cloud SDK",
+    "Terraform"
+]
+
 # Dossier logs
 def ensure_directories():
     if not os.path.exists("logs"):
@@ -55,6 +100,11 @@ def open_log():
     elif SYSTEM == "linux":
         subprocess.run(["xdg-open", LOG_FILE])
 
+def  update_dev_tools():
+    for tool in Dev_tools:
+        print(f"Update / Install: {tool}")
+        subprocess.run(["winget", "install", "--id", tool,  "-e", "--source", "winget"],
+                       shell=True)
 
 
 # detect linux package 
