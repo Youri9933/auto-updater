@@ -11,5 +11,5 @@
         "nvidia"
     ],
     "schedule_enabled": false,
-    "day_interval": 7,
+    "day_interval": 7
 }
