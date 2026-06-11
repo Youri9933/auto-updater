@@ -1,0 +1,15 @@
+{
+    "auto_update_app": true,
+    "update_all": true,
+    "app_list": [
+        "Google Chrome",
+        "Visual Studio Code",
+        "Git"
+    ],
+    "exclaude_liste": [
+        "driver",
+        "nvidia"
+    ],
+    "schedule_enabled": false,
+    "day_interval": 7,
+}
